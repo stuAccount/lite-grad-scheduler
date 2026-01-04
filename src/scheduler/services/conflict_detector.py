@@ -26,7 +26,7 @@ class ConflictDetector:
         """
         return self._find_conflicts(
             courses,
-            lambda a, b: a.professor.id == b.professor.id
+            lambda a, b: a.professor_id == b.professor_id
         )
 
     def find_classroom_conflicts(
@@ -42,7 +42,7 @@ class ConflictDetector:
         """
         return self._find_conflicts(
             courses,
-            lambda a, b: a.classroom.id == b.classroom.id
+            lambda a, b: a.classroom_id == b.classroom_id
         )
 
     def _find_conflicts(

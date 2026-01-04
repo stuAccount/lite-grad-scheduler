@@ -44,5 +44,8 @@ htmlcov/
 # uv
 uv.lock
 
+# Database
+scheduler.db
+
 # Project-specific
 AGENTS.md

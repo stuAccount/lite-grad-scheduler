@@ -31,18 +31,18 @@ class TestProfessorConflict:
         WHEN we check for professor conflicts
         THEN no conflicts should be found
         """
-        course_a = Course(
+        course_a = Course.from_timeslot(
             id="course-001",
             name="Machine Learning",
-            professor=professor_alice,
-            classroom=classroom_101,
+            professor_id=professor_alice.id,
+            classroom_id=classroom_101.id,
             timeslot=monday_period_1,
         )
-        course_b = Course(
+        course_b = Course.from_timeslot(
             id="course-002",
             name="Deep Learning",
-            professor=professor_alice,
-            classroom=classroom_202,
+            professor_id=professor_alice.id,
+            classroom_id=classroom_202.id,
             timeslot=monday_period_2,  # Different timeslot
         )
 
@@ -62,18 +62,18 @@ class TestProfessorConflict:
         WHEN we check for professor conflicts
         THEN a conflict should be detected
         """
-        course_a = Course(
+        course_a = Course.from_timeslot(
             id="course-001",
             name="Machine Learning",
-            professor=professor_alice,
-            classroom=classroom_101,
+            professor_id=professor_alice.id,
+            classroom_id=classroom_101.id,
             timeslot=monday_period_1,
         )
-        course_b = Course(
+        course_b = Course.from_timeslot(
             id="course-002",
             name="Deep Learning",
-            professor=professor_alice,
-            classroom=classroom_202,
+            professor_id=professor_alice.id,
+            classroom_id=classroom_202.id,
             timeslot=monday_period_1,  # SAME timeslot - CONFLICT!
         )
 
@@ -95,18 +95,18 @@ class TestProfessorConflict:
         WHEN we check for professor conflicts
         THEN no conflicts should be found
         """
-        course_a = Course(
+        course_a = Course.from_timeslot(
             id="course-001",
             name="Machine Learning",
-            professor=professor_alice,
-            classroom=classroom_101,
+            professor_id=professor_alice.id,
+            classroom_id=classroom_101.id,
             timeslot=monday_period_1,
         )
-        course_b = Course(
+        course_b = Course.from_timeslot(
             id="course-002",
             name="Database Systems",
-            professor=professor_bob,  # Different professor
-            classroom=classroom_202,
+            professor_id=professor_bob.id,  # Different professor
+            classroom_id=classroom_202.id,
             timeslot=monday_period_1,
         )
 
@@ -135,18 +135,18 @@ class TestClassroomConflict:
         WHEN we check for classroom conflicts
         THEN no conflicts should be found
         """
-        course_a = Course(
+        course_a = Course.from_timeslot(
             id="course-001",
             name="Machine Learning",
-            professor=professor_alice,
-            classroom=classroom_101,
+            professor_id=professor_alice.id,
+            classroom_id=classroom_101.id,
             timeslot=monday_period_1,
         )
-        course_b = Course(
+        course_b = Course.from_timeslot(
             id="course-002",
             name="Database Systems",
-            professor=professor_bob,
-            classroom=classroom_101,  # Same room
+            professor_id=professor_bob.id,
+            classroom_id=classroom_101.id,  # Same room
             timeslot=monday_period_2,  # Different timeslot
         )
 
@@ -166,18 +166,18 @@ class TestClassroomConflict:
         WHEN we check for classroom conflicts
         THEN a conflict should be detected
         """
-        course_a = Course(
+        course_a = Course.from_timeslot(
             id="course-001",
             name="Machine Learning",
-            professor=professor_alice,
-            classroom=classroom_101,
+            professor_id=professor_alice.id,
+            classroom_id=classroom_101.id,
             timeslot=monday_period_1,
         )
-        course_b = Course(
+        course_b = Course.from_timeslot(
             id="course-002",
             name="Database Systems",
-            professor=professor_bob,
-            classroom=classroom_101,  # SAME room
+            professor_id=professor_bob.id,
+            classroom_id=classroom_101.id,  # SAME room
             timeslot=monday_period_1,  # SAME timeslot - CONFLICT!
         )
 
@@ -199,18 +199,18 @@ class TestClassroomConflict:
         WHEN we check for classroom conflicts
         THEN no conflicts should be found
         """
-        course_a = Course(
+        course_a = Course.from_timeslot(
             id="course-001",
             name="Machine Learning",
-            professor=professor_alice,
-            classroom=classroom_101,
+            professor_id=professor_alice.id,
+            classroom_id=classroom_101.id,
             timeslot=monday_period_1,
         )
-        course_b = Course(
+        course_b = Course.from_timeslot(
             id="course-002",
             name="Database Systems",
-            professor=professor_bob,
-            classroom=classroom_202,  # Different room
+            professor_id=professor_bob.id,
+            classroom_id=classroom_202.id,  # Different room
             timeslot=monday_period_1,
         )
 
