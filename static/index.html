@@ -94,6 +94,13 @@
             </div>
 
             <div class="subsection">
+                <h3>Export Schedule</h3>
+                <p>Download the schedule for printing or sharing.</p>
+                <button onclick="exportPDF()" class="export-btn" style="margin-right: 10px;">📄 Export as PDF</button>
+                <button onclick="exportExcel()" class="export-btn">📊 Export as Excel</button>
+            </div>
+
+            <div class="subsection">
                 <h3>Generate New Schedule</h3>
                 <p>Add course requests above, then click generate to create a conflict-free schedule.</p>
                 <form id="add-course-request-form">
@@ -159,7 +166,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2026 Grad Scheduler | Sprint 4 MVP</p>
+        <p>&copy; 2026 Grad Scheduler | 1.0</p>
     </footer>
 
     <script src="/static/app.js"></script>

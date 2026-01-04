@@ -404,3 +404,49 @@ def get_weekly_schedule(session: Session = Depends(get_session)):
         "grid": grid,
         "total_courses": len(courses)
     }
+
+# ========================================
+# EXPORT ENDPOINTS
+# ========================================
+
+from fastapi.responses import StreamingResponse
+from scheduler.services.pdf_exporter import SchedulePDFExporter
+from scheduler.services.excel_exporter import ScheduleExcelExporter
+
+
+@router.get("/export/schedule/pdf")
+def export_schedule_pdf(session: Session = Depends(get_session)):
+    """Export weekly schedule as PDF.
+    
+    Returns PDF file for download.
+    """
+    repo = CourseRepository(session)
+    courses = repo.get_all_courses_ordered()
+    
+    exporter = SchedulePDFExporter()
+    pdf_buffer = exporter.generate_weekly_grid(courses)
+    
+    return StreamingResponse(
+        pdf_buffer,
+        media_type="application/pdf",
+        headers={"Content-Disposition": "attachment; filename=schedule.pdf"}
+    )
+
+
+@router.get("/export/schedule/excel")
+def export_schedule_excel(session: Session = Depends(get_session)):
+    """Export course list as Excel.
+    
+    Returns Excel file for download.
+    """
+    repo = CourseRepository(session)
+    courses = repo.get_all_courses_ordered()
+    
+    exporter = ScheduleExcelExporter()
+    excel_buffer = exporter.generate_course_list(courses)
+    
+    return StreamingResponse(
+        excel_buffer,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=schedule.xlsx"}
+    )

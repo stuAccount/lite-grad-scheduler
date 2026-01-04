@@ -511,3 +511,17 @@ function displayWeeklyGrid(data) {
 document.addEventListener('DOMContentLoaded', () => {
     loadWeeklyView();
 });
+
+// ========================================
+// FILE EXPORT
+// ========================================
+
+function exportPDF() {
+    window.location.href = `${API_BASE}/courses/export/schedule/pdf`;
+    showMessage('Downloading PDF...', 'success');
+}
+
+function exportExcel() {
+    window.location.href = `${API_BASE}/courses/export/schedule/excel`;
+    showMessage('Downloading Excel file...', 'success');
+}
