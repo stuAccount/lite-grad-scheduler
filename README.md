@@ -180,7 +180,7 @@ Both constraints are enforced via the `/courses/check-conflicts` endpoint.
 
 - **Sprint 1** ✅: Conflict Detection MVP
 - **Sprint 2** ✅: Persistence + REST API
-- **Sprint 3**: Advanced scheduling with OR-Tools
+- **Sprint 3** ✅: Advanced scheduling with OR-Tools
 - **Sprint 4**: Web UI
 
 ---

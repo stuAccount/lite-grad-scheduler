@@ -8,6 +8,7 @@ from scheduler.db import get_session
 from scheduler.db.repository import CourseRepository
 from scheduler.domain.models import Classroom, Course, Professor, TimeSlot, Weekday
 from scheduler.services.conflict_detector import ConflictDetector
+from scheduler.services.schedule_generator import ScheduleGenerator
 
 router = APIRouter(prefix="/courses", tags=["courses"])
 
@@ -28,6 +29,21 @@ class CourseCreateRequest(BaseModel):
     professor_id: str
     classroom_id: str
     timeslot: TimeSlotSchema
+
+
+class CourseRequestSchema(BaseModel):
+    """Schema for a course to be scheduled (no timeslot yet)."""
+
+    id: str
+    name: str
+    professor_id: str
+    classroom_id: str
+
+
+class ScheduleGenerateRequest(BaseModel):
+    """Request schema for automated scheduling."""
+
+    course_requests: list[CourseRequestSchema]
 
 
 class ProfessorCreateRequest(BaseModel):
@@ -162,3 +178,69 @@ def check_conflicts(session: Session = Depends(get_session)) -> ConflictResponse
             "classroom_conflicts": room_details,
         }
     )
+
+
+@router.post("/schedules/generate")
+def generate_schedule(
+    request: ScheduleGenerateRequest, session: Session = Depends(get_session)
+):
+    """Generate a conflict-free schedule automatically.
+
+    Args:
+        request: Schedule generation request with course list.
+        session: Database session.
+
+    Returns:
+        Generated schedule with courses assigned to timeslots.
+
+    Raises:
+        HTTPException: If schedule cannot be generated or resources not found.
+    """
+    repo = CourseRepository(session)
+    
+    # Get all professors and classrooms from database
+    professors = repo.get_all_professors()
+    classrooms = repo.get_all_classrooms()
+    
+    # Define available timeslots (Mon-Fri, periods 1-8)
+    available_timeslots = [
+        TimeSlot(weekday=Weekday(day), period=period)
+        for day in range(1, 6)  # Mon-Fri
+        for period in range(1, 9)  # Periods 1-8
+    ]
+    
+    # Convert Pydantic models to dicts for ScheduleGenerator
+    course_requests_dicts = [
+        {
+            "id": cr.id,
+            "name": cr.name,
+            "professor_id": cr.professor_id,
+            "classroom_id": cr.classroom_id,
+        }
+        for cr in request.course_requests
+    ]
+    
+    # Generate schedule
+    generator = ScheduleGenerator()
+    try:
+        courses = generator.generate_schedule(
+            course_requests=course_requests_dicts,
+            professors=professors,
+            classrooms=classrooms,
+            available_timeslots=available_timeslots,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+    # Optionally save generated courses to database
+    saved_courses = []
+    for course in courses:
+        saved_course = repo.add_course(course)
+        # Convert SQLModel to dict for JSON response
+        saved_courses.append(saved_course.model_dump(mode="json"))
+    
+    return {
+        "message": "Schedule generated successfully",
+        "courses": saved_courses,
+        "total": len(saved_courses),
+    }

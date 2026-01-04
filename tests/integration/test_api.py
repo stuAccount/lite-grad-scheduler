@@ -278,3 +278,74 @@ class TestCourseEndpoints:
         data = response.json()
         assert data["classroom_conflicts"] == 1
         assert len(data["details"]["classroom_conflicts"]) == 1
+
+
+class TestScheduleGeneration:
+    """Test automated schedule generation endpoints."""
+
+    def test_generate_schedule(self, client: TestClient):
+        """POST /courses/schedules/generate creates conflict-free schedule."""
+        # Create professors and classrooms
+        client.post(
+            "/courses/professors",
+            json={"id": "prof-001", "name": "Alice Wang"}
+        )
+        client.post(
+            "/courses/professors",
+            json={"id": "prof-002", "name": "Bob Chen"}
+        )
+        client.post(
+            "/courses/classrooms",
+            json={"id": "room-101", "name": "Room 101", "capacity": 50}
+        )
+        client.post(
+            "/courses/classrooms",
+            json={"id": "room-202", "name": "Room 202", "capacity": 100}
+        )
+
+        # Generate schedule
+        response = client.post(
+            "/courses/schedules/generate",
+            json={
+                "course_requests": [
+                    {
+                        "id": "cs501",
+                        "name": "Machine Learning",
+                        "professor_id": "prof-001",
+                        "classroom_id": "room-101"
+                    },
+                    {
+                        "id": "cs502",
+                        "name": "Deep Learning",
+                        "professor_id": "prof-001",
+                        "classroom_id": "room-202"
+                    },
+                    {
+                        "id": "cs601",
+                        "name": "Database Systems",
+                        "professor_id": "prof-002",
+                        "classroom_id": "room-101"
+                    }
+                ]
+            }
+        )
+
+        assert response.status_code == 200
+        data = response.json()
+        assert data["message"] == "Schedule generated successfully"
+        assert data["total"] == 3
+        assert len(data["courses"]) == 3
+
+        # Verify all courses have timeslots
+        for course in data["courses"]:
+            assert "weekday" in course
+            assert "period" in course
+            assert course["weekday"] >= 1 and course["weekday"] <= 5
+            assert course["period"] >= 1 and course["period"] <= 12
+
+        # Verify schedule is conflict-free
+        conflict_response = client.post("/courses/check-conflicts")
+        assert conflict_response.status_code == 200
+        conflict_data = conflict_response.json()
+        assert conflict_data["professor_conflicts"] == 0
+        assert conflict_data["classroom_conflicts"] == 0
