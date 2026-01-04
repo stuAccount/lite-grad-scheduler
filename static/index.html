@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grad Scheduler</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>Graduate Course Scheduler</h1>
+        <p>Automated conflict-free scheduling for graduate courses</p>
+    </header>
+
+    <main>
+        <!-- SECTION 1: Add Resources -->
+        <section id="resources">
+            <h2>1. Add Resources</h2>
+            
+            <div class="subsection">
+                <h3>Add Professor</h3>
+                <form id="add-professor-form">
+                    <div class="form-row">
+                        <label for="prof_id">Professor ID:</label>
+                        <input type="text" id="prof_id" name="prof_id" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="prof_name">Professor Name:</label>
+                        <input type="text" id="prof_name" name="prof_name" required>
+                    </div>
+                    <button type="submit">Add Professor</button>
+                </form>
+                <div id="professors-list"></div>
+            </div>
+
+            <div class="subsection">
+                <h3>Add Classroom</h3>
+                <form id="add-classroom-form">
+                    <div class="form-row">
+                        <label for="room_id">Classroom ID:</label>
+                        <input type="text" id="room_id" name="room_id" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="room_name">Classroom Name:</label>
+                        <input type="text" id="room_name" name="room_name" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="room_capacity">Capacity:</label>
+                        <input type="number" id="room_capacity" name="room_capacity" required>
+                    </div>
+                    <button type="submit">Add Classroom</button>
+                </form>
+                <div id="classrooms-list"></div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Generate Schedule -->
+        <section id="schedule-generation">
+            <h2>2. Generate Schedule</h2>
+            
+            <div class="subsection">
+                <h3>Add Course Requests</h3>
+                <form id="add-course-request-form">
+                    <div class="form-row">
+                        <label for="course_id">Course ID:</label>
+                        <input type="text" id="course_id" name="course_id" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="course_name">Course Name:</label>
+                        <input type="text" id="course_name" name="course_name" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="course_prof">Professor ID:</label>
+                        <input type="text" id="course_prof" name="course_prof" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="course_room">Classroom ID:</label>
+                        <input type="text" id="course_room" name="course_room" required>
+                    </div>
+                    <button type="button" onclick="addCourseRequest()">Add to List</button>
+                </form>
+
+                <div id="course-requests-list"></div>
+                
+                <button id="generate-btn" onclick="generateSchedule()" style="margin-top: 20px;">
+                    Generate Schedule
+                </button>
+            </div>
+        </section>
+
+        <!-- SECTION 3: View Results -->
+        <section id="results">
+            <h2>3. View Schedule</h2>
+            <div id="schedule-display"></div>
+            
+            <h3>Conflicts</h3>
+            <div id="conflicts-display"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Grad Scheduler | Sprint 4 MVP</p>
+    </footer>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

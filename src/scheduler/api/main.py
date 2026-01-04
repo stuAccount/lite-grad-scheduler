@@ -1,6 +1,8 @@
 """FastAPI application."""
 
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 from scheduler.api.routes import courses
 from scheduler.db import init_db
@@ -8,7 +10,7 @@ from scheduler.db import init_db
 app = FastAPI(
     title="Graduate Course Scheduler",
     description="A lightweight course scheduling system for graduate students",
-    version="0.2.0"
+    version="0.4.0"
 )
 
 # Initialize database on startup
@@ -16,15 +18,14 @@ app = FastAPI(
 def on_startup():
     init_db()
 
+# Mount static files
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 # Include routers
 app.include_router(courses.router)
 
 
-@app.get("/")
+@app.get("/", include_in_schema=False)
 def root():
-    """Root endpoint."""
-    return {
-        "message": "Graduate Course Scheduler API",
-        "docs": "/docs",
-        "version": "0.2.0"
-    }
+    """Serve web UI."""
+    return FileResponse("static/index.html")

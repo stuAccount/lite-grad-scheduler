@@ -1,0 +1,214 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', Courier, monospace;
+    line-height: 1.6;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #fff;
+    color: #000;
+}
+
+/* Header */
+header {
+    border-bottom: 3px solid #000;
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+header p {
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* Typography */
+h2 {
+    font-size: 20px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #000;
+    padding-bottom: 8px;
+}
+
+h3 {
+    font-size: 16px;
+    margin-top: 25px;
+    margin-bottom: 12px;
+    text-decoration: underline;
+}
+
+/* Sections */
+section {
+    margin-bottom: 50px;
+}
+
+.subsection {
+    padding: 20px;
+    border: 2px solid #000;
+    margin-bottom: 20px;
+}
+
+/* Forms */
+.form-row {
+    margin-bottom: 12px;
+}
+
+label {
+    display: inline-block;
+    width: 160px;
+    font-weight: bold;
+}
+
+input, select, textarea {
+    padding: 8px;
+    border: 2px solid #000;
+    font-size: 14px;
+    font-family: 'Courier New', Courier, monospace;
+    background: #fff;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 250px;
+}
+
+button {
+    padding: 10px 20px;
+    border: 2px solid #000;
+    background: #000;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+button:hover {
+    background: #333;
+}
+
+button:active {
+    background: #555;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    border: 2px solid #000;
+}
+
+th, td {
+    border: 1px solid #000;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background: #000;
+    color: #fff;
+    font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background: #f5f5f5;
+}
+
+/* Lists */
+#professors-list,
+#classrooms-list,
+#course-requests-list {
+    margin-top: 15px;
+}
+
+.list-table {
+    margin-top: 10px;
+}
+
+/* Schedule grid */
+.schedule-grid {
+    margin-top: 20px;
+}
+
+.schedule-grid table {
+    font-size: 12px;
+}
+
+.schedule-grid th {
+    background: #000;
+    color: #fff;
+}
+
+.schedule-grid td {
+    vertical-align: top;
+    height: 60px;
+}
+
+.course-item {
+    padding: 4px;
+    margin: 2px 0;
+    border: 1px solid #000;
+    background: #fff;
+    font-size: 11px;
+}
+
+/* Conflicts */
+.conflict {
+    background: #000;
+    color: #fff;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 2px solid #000;
+}
+
+.conflict-item {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 2px solid #000;
+}
+
+/* Messages */
+.message {
+    padding: 10px;
+    margin: 10px 0;
+    border: 2px solid #000;
+}
+
+.message.success {
+    background: #fff;
+}
+
+.message.error {
+    background: #000;
+    color: #fff;
+}
+
+/* Footer */
+footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 2px solid #000;
+    text-align: center;
+    font-size: 12px;
+}
+
+/* Utility */
+.hidden {
+    display: none;
+}
+
+.bold {
+    font-weight: bold;
+}

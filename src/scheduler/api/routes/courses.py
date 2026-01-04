@@ -79,6 +79,13 @@ def create_professor(
     return repo.add_professor(professor)
 
 
+@router.get("/professors")
+def list_professors(session: Session = Depends(get_session)):
+    """List all professors."""
+    repo = CourseRepository(session)
+    return repo.get_all_professors()
+
+
 @router.post("/classrooms", status_code=201)
 def create_classroom(
     classroom_data: ClassroomCreateRequest, session: Session = Depends(get_session)
@@ -87,6 +94,13 @@ def create_classroom(
     repo = CourseRepository(session)
     classroom = Classroom(**classroom_data.model_dump())
     return repo.add_classroom(classroom)
+
+
+@router.get("/classrooms")
+def list_classrooms(session: Session = Depends(get_session)):
+    """List all classrooms."""
+    repo = CourseRepository(session)
+    return repo.get_all_classrooms()
 
 
 @router.post("/", status_code=201)
