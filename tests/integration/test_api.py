@@ -349,3 +349,130 @@ class TestScheduleGeneration:
         conflict_data = conflict_response.json()
         assert conflict_data["professor_conflicts"] == 0
         assert conflict_data["classroom_conflicts"] == 0
+
+
+class TestValidation:
+    """Test referential integrity validation."""
+
+    def test_create_course_with_nonexistent_professor(self, client: TestClient):
+        """POST /courses with invalid professor_id returns 404."""
+        # Create only a classroom, no professor
+        client.post(
+            "/courses/classrooms",
+            json={"id": "room-101", "name": "Room 101", "capacity": 50}
+        )
+
+        # Try to create course with non-existent professor
+        response = client.post(
+            "/courses/",
+            json={
+                "id": "cs501",
+                "name": "Machine Learning",
+                "professor_id": "invalid-prof",
+                "classroom_id": "room-101",
+                "timeslot": {"weekday": 1, "period": 1}
+            }
+        )
+
+        assert response.status_code == 404
+        data = response.json()
+        assert "professor" in data["detail"].lower()
+
+    def test_create_course_with_nonexistent_classroom(self, client: TestClient):
+        """POST /courses with invalid classroom_id returns 404."""
+        # Create only a professor, no classroom
+        client.post(
+            "/courses/professors",
+            json={"id": "prof-001", "name": "Alice Wang"}
+        )
+
+        # Try to create course with non-existent classroom
+        response = client.post(
+            "/courses/",
+            json={
+                "id": "cs501",
+                "name": "Machine Learning",
+                "professor_id": "prof-001",
+                "classroom_id": "invalid-room",
+                "timeslot": {"weekday": 1, "period": 1}
+            }
+        )
+
+        assert response.status_code == 404
+        data = response.json()
+        assert "classroom" in data["detail"].lower()
+
+    def test_create_course_with_both_invalid(self, client: TestClient):
+        """POST /courses with both IDs invalid returns 404."""
+        # Create nothing
+        response = client.post(
+            "/courses/",
+            json={
+                "id": "cs501",
+                "name": "Machine Learning",
+                "professor_id": "invalid-prof",
+                "classroom_id": "invalid-room",
+                "timeslot": {"weekday": 1, "period": 1}
+            }
+        )
+
+        assert response.status_code == 404
+        # Should mention at least one of the missing resources
+        data = response.json()
+        detail_lower = data["detail"].lower()
+        assert "professor" in detail_lower or "classroom" in detail_lower
+
+    def test_generate_schedule_with_invalid_professor(self, client: TestClient):
+        """POST /courses/schedules/generate with invalid professor_id returns 404."""
+        # Create only classrooms
+        client.post(
+            "/courses/classrooms",
+            json={"id": "room-101", "name": "Room 101", "capacity": 50}
+        )
+
+        # Try to generate schedule with non-existent professor
+        response = client.post(
+            "/courses/schedules/generate",
+            json={
+                "course_requests": [
+                    {
+                        "id": "cs501",
+                        "name": "Machine Learning",
+                        "professor_id": "invalid-prof",
+                        "classroom_id": "room-101"
+                    }
+                ]
+            }
+        )
+
+        assert response.status_code == 404
+        data = response.json()
+        assert "professor" in data["detail"].lower()
+
+    def test_generate_schedule_with_invalid_classroom(self, client: TestClient):
+        """POST /courses/schedules/generate with invalid classroom_id returns 404."""
+        # Create only professors
+        client.post(
+            "/courses/professors",
+            json={"id": "prof-001", "name": "Alice Wang"}
+        )
+
+        # Try to generate schedule with non-existent classroom
+        response = client.post(
+            "/courses/schedules/generate",
+            json={
+                "course_requests": [
+                    {
+                        "id": "cs501",
+                        "name": "Machine Learning",
+                        "professor_id": "prof-001",
+                        "classroom_id": "invalid-room"
+                    }
+                ]
+            }
+        )
+
+        assert response.status_code == 404
+        data = response.json()
+        assert "classroom" in data["detail"].lower()
+

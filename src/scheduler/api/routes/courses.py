@@ -130,6 +130,22 @@ def create_course(
     except (ValueError, KeyError) as e:
         raise HTTPException(status_code=400, detail=f"Invalid timeslot: {e}")
     
+    # Validate professor exists
+    professor = repo.get_professor_by_id(course_data.professor_id)
+    if professor is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Professor not found: {course_data.professor_id}"
+        )
+    
+    # Validate classroom exists
+    classroom = repo.get_classroom_by_id(course_data.classroom_id)
+    if classroom is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Classroom not found: {course_data.classroom_id}"
+        )
+    
     # Create Course using from_timeslot
     course = Course.from_timeslot(
         id=course_data.id,
@@ -215,6 +231,31 @@ def generate_schedule(
     # Get all professors and classrooms from database
     professors = repo.get_all_professors()
     classrooms = repo.get_all_classrooms()
+    
+    # Validate all referenced professor and classroom IDs exist
+    professor_ids = {p.id for p in professors}
+    classroom_ids = {c.id for c in classrooms}
+    
+    missing_professors = []
+    missing_classrooms = []
+    
+    for course_req in request.course_requests:
+        if course_req.professor_id not in professor_ids:
+            missing_professors.append(course_req.professor_id)
+        if course_req.classroom_id not in classroom_ids:
+            missing_classrooms.append(course_req.classroom_id)
+    
+    # Remove duplicates
+    missing_professors = list(set(missing_professors))
+    missing_classrooms = list(set(missing_classrooms))
+    
+    if missing_professors or missing_classrooms:
+        error_parts = []
+        if missing_professors:
+            error_parts.append(f"Professors not found: {', '.join(missing_professors)}")
+        if missing_classrooms:
+            error_parts.append(f"Classrooms not found: {', '.join(missing_classrooms)}")
+        raise HTTPException(status_code=404, detail="; ".join(error_parts))
     
     # Define available timeslots (Mon-Fri, periods 1-8)
     available_timeslots = [

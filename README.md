@@ -8,10 +8,19 @@ A lightweight, logic-driven course scheduling system for graduate students built
 
 ## ✨ Features
 
-- **Hard Constraint Detection**: Detects professor and classroom double-booking
+### Core (Implemented)
+- **Automated Scheduling**: OR-Tools powered conflict-free schedule generation
+- **Hard Constraint Detection**: Professor and classroom double-booking prevention
 - **REST API**: Full CRUD operations for professors, classrooms, and courses
 - **SQLite Persistence**: Lightweight database with SQLModel ORM
-- **98% Test Coverage**: Comprehensive unit and integration tests
+- **Web Interface**: Simple UI for managing resources and generating schedules
+- **94% Test Coverage**: Comprehensive unit and integration tests
+
+### Coming in v1.0
+- Data integrity validation (no orphaned courses)
+- Enhanced course metadata (credits, hours, type)
+- Multi-view schedule queries (by professor, classroom)
+- PDF/Excel export
 
 ---
 
@@ -74,35 +83,23 @@ curl -X POST http://localhost:8000/courses/ \
 - `weekday`: 1 (Monday) to 5 (Friday)
 - `period`: 1 to 12 (class period number)
 
-### 4. List All Courses
+### 4. Generate Automated Schedule
 
 ```bash
-curl http://localhost:8000/courses/
+curl -X POST http://localhost:8000/courses/schedules/generate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "course_requests": [
+      {"id": "cs501", "name": "ML", "professor_id": "prof-001", "classroom_id": "room-101"},
+      {"id": "cs502", "name": "DL", "professor_id": "prof-001", "classroom_id": "room-102"}
+    ]
+  }'
 ```
 
 ### 5. Check for Conflicts
 
 ```bash
 curl -X POST http://localhost:8000/courses/check-conflicts
-```
-
-**Response:**
-```json
-{
-  "professor_conflicts": 1,
-  "classroom_conflicts": 0,
-  "details": {
-    "professor_conflicts": [
-      {
-        "course_a": {"id": "cs501", "name": "Machine Learning"},
-        "course_b": {"id": "cs502", "name": "Deep Learning"},
-        "professor_id": "prof-001",
-        "timeslot": {"weekday": 1, "period": 1}
-      }
-    ],
-    "classroom_conflicts": []
-  }
-}
 ```
 
 ---
@@ -131,9 +128,10 @@ uv run pytest tests/integration/ -v
 lite-grad-scheduler/
 ├── src/scheduler/
 │   ├── domain/          # Domain models (SQLModel tables)
-│   ├── services/        # Business logic (ConflictDetector)
+│   ├── services/        # Business logic (ConflictDetector, ScheduleGenerator)
 │   ├── db/              # Database layer (repository pattern)
 │   └── api/             # FastAPI routes
+├── static/              # Web UI (HTML/CSS/JS)
 ├── tests/
 │   ├── unit/            # Fast, isolated tests
 │   └── integration/     # API integration tests
@@ -143,34 +141,37 @@ lite-grad-scheduler/
 
 ---
 
-## 🎯 Conflict Detection Rules
+## 🎯 Constraint System
 
-### Hard Constraints
-
+### Hard Constraints (Enforced)
 1. **Professor Conflict**: A professor cannot teach two courses at the same timeslot
 2. **Classroom Conflict**: A classroom cannot host two courses at the same timeslot
 
-Both constraints are enforced via the `/courses/check-conflicts` endpoint.
+### Soft Constraints (Future)
+- Professor time preferences
+- Minimizing gaps between classes
+- Room capacity matching
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Python 3.12** with type hints
-- **FastAPI** for REST API
-- **SQLModel** for ORM (SQLite)
-- **Pytest** for testing
-- **uv** for dependency management
+| Component | Technology |
+|-----------|------------|
+| Language | Python 3.12 with type hints |
+| API | FastAPI |
+| ORM | SQLModel (SQLite) |
+| Scheduler | Google OR-Tools CP-SAT |
+| Testing | Pytest (94% coverage) |
+| Package Manager | uv |
 
 ---
 
-## 📊 Test Coverage
-
-**Current Coverage: 94%**
+## 📊 Coverage
 
 ```
 14 tests passing:
-- 6 unit tests (conflict detection logic)
+- 6 unit tests (conflict detection, schedule generation)
 - 8 integration tests (API endpoints)
 ```
 
@@ -178,13 +179,26 @@ Both constraints are enforced via the `/courses/check-conflicts` endpoint.
 
 ## 🚧 Roadmap
 
+### Completed
 - **Sprint 1** ✅: Conflict Detection MVP
 - **Sprint 2** ✅: Persistence + REST API
-- **Sprint 3** ✅: Advanced scheduling with OR-Tools
-- **Sprint 4**: Web UI
+- **Sprint 3** ✅: Automated scheduling with OR-Tools
+- **Sprint 4** ✅: Web UI
+- **Sprint 5** ✅: Data integrity validation
+
+### Release 1.0 (In Progress)
+- **Sprint 6**: Enhanced course/professor metadata
+- **Sprint 7**: Multi-view schedule queries
+- **Sprint 8**: PDF/Excel export
+
+### Future
+- Admin authentication & role-based access
+- Student enrollment model
+- Drag-and-drop schedule adjustment
+- Mid-semester change management
 
 ---
 
 ## 📄 License
 
-This project follows the XP (Extreme Programming) methodology with strict TDD.
+MIT License. This project follows XP (Extreme Programming) methodology with strict TDD.

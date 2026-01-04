@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grad Scheduler</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
+
 <body>
     <header>
         <h1>Graduate Course Scheduler</h1>
@@ -16,7 +18,7 @@
         <!-- SECTION 1: Add Resources -->
         <section id="resources">
             <h2>1. Add Resources</h2>
-            
+
             <div class="subsection">
                 <h3>Add Professor</h3>
                 <form id="add-professor-form">
@@ -57,7 +59,7 @@
         <!-- SECTION 2: Generate Schedule -->
         <section id="schedule-generation">
             <h2>2. Generate Schedule</h2>
-            
+
             <div class="subsection">
                 <h3>Add Course Requests</h3>
                 <form id="add-course-request-form">
@@ -70,18 +72,22 @@
                         <input type="text" id="course_name" name="course_name" required>
                     </div>
                     <div class="form-row">
-                        <label for="course_prof">Professor ID:</label>
-                        <input type="text" id="course_prof" name="course_prof" required>
+                        <label for="course_prof">Professor:</label>
+                        <select id="course_prof" name="course_prof" required>
+                            <option value="">Select Professor</option>
+                        </select>
                     </div>
                     <div class="form-row">
-                        <label for="course_room">Classroom ID:</label>
-                        <input type="text" id="course_room" name="course_room" required>
+                        <label for="course_room">Classroom:</label>
+                        <select id="course_room" name="course_room" required>
+                            <option value="">Select Classroom</option>
+                        </select>
                     </div>
                     <button type="button" onclick="addCourseRequest()">Add to List</button>
                 </form>
 
                 <div id="course-requests-list"></div>
-                
+
                 <button id="generate-btn" onclick="generateSchedule()" style="margin-top: 20px;">
                     Generate Schedule
                 </button>
@@ -92,7 +98,7 @@
         <section id="results">
             <h2>3. View Schedule</h2>
             <div id="schedule-display"></div>
-            
+
             <h3>Conflicts</h3>
             <div id="conflicts-display"></div>
         </section>
@@ -104,4 +110,5 @@
 
     <script src="/static/app.js"></script>
 </body>
+
 </html>

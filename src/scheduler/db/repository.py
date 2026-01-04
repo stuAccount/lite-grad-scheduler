@@ -71,3 +71,28 @@ class CourseRepository:
         """Retrieve all classrooms."""
         statement = select(Classroom)
         return list(self.session.exec(statement).all())
+
+    def get_professor_by_id(self, professor_id: str) -> Professor | None:
+        """Get a professor by ID.
+
+        Args:
+            professor_id: The professor's ID.
+
+        Returns:
+            The professor if found, None otherwise.
+        """
+        statement = select(Professor).where(Professor.id == professor_id)
+        return self.session.exec(statement).first()
+
+    def get_classroom_by_id(self, classroom_id: str) -> Classroom | None:
+        """Get a classroom by ID.
+
+        Args:
+            classroom_id: The classroom's ID.
+
+        Returns:
+            The classroom if found, None otherwise.
+        """
+        statement = select(Classroom).where(Classroom.id == classroom_id)
+        return self.session.exec(statement).first()
+

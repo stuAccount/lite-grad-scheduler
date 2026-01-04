@@ -52,8 +52,32 @@ async function loadProfessors() {
         });
         html += '</tbody></table>';
         listDiv.innerHTML = html;
+
+        // Also populate the dropdown
+        populateProfessorDropdown(professors);
     } catch (err) {
         console.error('Failed to load professors:', err);
+    }
+}
+
+function populateProfessorDropdown(professors) {
+    const dropdown = document.getElementById('course_prof');
+    // Clear existing options except the first one
+    dropdown.innerHTML = '<option value="">Select Professor</option>';
+
+    if (professors.length === 0) {
+        const option = document.createElement('option');
+        option.value = '';
+        option.textContent = 'No professors available';
+        option.disabled = true;
+        dropdown.appendChild(option);
+    } else {
+        professors.forEach(prof => {
+            const option = document.createElement('option');
+            option.value = prof.id;
+            option.textContent = `${prof.name} (${prof.id})`;
+            dropdown.appendChild(option);
+        });
     }
 }
 
@@ -106,8 +130,32 @@ async function loadClassrooms() {
         });
         html += '</tbody></table>';
         listDiv.innerHTML = html;
+
+        // Also populate the dropdown
+        populateClassroomDropdown(classrooms);
     } catch (err) {
         console.error('Failed to load classrooms:', err);
+    }
+}
+
+function populateClassroomDropdown(classrooms) {
+    const dropdown = document.getElementById('course_room');
+    // Clear existing options except the first one
+    dropdown.innerHTML = '<option value="">Select Classroom</option>';
+
+    if (classrooms.length === 0) {
+        const option = document.createElement('option');
+        option.value = '';
+        option.textContent = 'No classrooms available';
+        option.disabled = true;
+        dropdown.appendChild(option);
+    } else {
+        classrooms.forEach(room => {
+            const option = document.createElement('option');
+            option.value = room.id;
+            option.textContent = `${room.name} (${room.id})`;
+            dropdown.appendChild(option);
+        });
     }
 }
 
