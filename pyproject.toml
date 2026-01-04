@@ -1,0 +1,21 @@
+[project]
+name = "lite-grad-scheduler"
+version = "0.1.0"
+description = "A lightweight, logic-driven course scheduling system for graduate students"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.0",
+    "sqlmodel>=0.0.22",
+    "uvicorn>=0.32.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.0.0",
+    "httpx>=0.27.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
