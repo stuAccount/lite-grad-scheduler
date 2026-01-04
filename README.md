@@ -185,9 +185,9 @@ lite-grad-scheduler/
 - **Sprint 3** ✅: Automated scheduling with OR-Tools
 - **Sprint 4** ✅: Web UI
 - **Sprint 5** ✅: Data integrity validation
+- **Sprint 6** ✅: Enhanced course/professor metadata
 
 ### Release 1.0 (In Progress)
-- **Sprint 6**: Enhanced course/professor metadata
 - **Sprint 7**: Multi-view schedule queries
 - **Sprint 8**: PDF/Excel export
 

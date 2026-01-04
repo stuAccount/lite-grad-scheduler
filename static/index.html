@@ -30,6 +30,20 @@
                         <label for="prof_name">Professor Name:</label>
                         <input type="text" id="prof_name" name="prof_name" required>
                     </div>
+                    <div class="form-row">
+                        <label for="prof_dept">Department (optional):</label>
+                        <input type="text" id="prof_dept" name="prof_dept">
+                    </div>
+                    <div class="form-row">
+                        <label for="prof_title">Title (optional):</label>
+                        <select id="prof_title" name="prof_title">
+                            <option value="">None</option>
+                            <option value="assistant">Assistant Professor</option>
+                            <option value="lecturer">Lecturer</option>
+                            <option value="associate">Associate Professor</option>
+                            <option value="full">Full Professor</option>
+                        </select>
+                    </div>
                     <button type="submit">Add Professor</button>
                 </form>
                 <div id="professors-list"></div>
@@ -82,6 +96,26 @@
                         <select id="course_room" name="course_room" required>
                             <option value="">Select Classroom</option>
                         </select>
+                    </div>
+                    <div class="form-row">
+                        <label for="course_credits">Credits (optional):</label>
+                        <input type="number" step="0.5" id="course_credits" name="course_credits">
+                    </div>
+                    <div class="form-row">
+                        <label for="course_hours">Hours (optional):</label>
+                        <input type="number" id="course_hours" name="course_hours">
+                    </div>
+                    <div class="form-row">
+                        <label for="course_type">Type (optional):</label>
+                        <select id="course_type" name="course_type">
+                            <option value="">None</option>
+                            <option value="required">Required (必修)</option>
+                            <option value="elective">Elective (选修)</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <label for="course_dept">Department (optional):</label>
+                        <input type="text" id="course_dept" name="course_dept">
                     </div>
                     <button type="button" onclick="addCourseRequest()">Add to List</button>
                 </form>

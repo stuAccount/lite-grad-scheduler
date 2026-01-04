@@ -18,7 +18,9 @@ document.getElementById('add-professor-form').addEventListener('submit', async (
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 id: formData.get('prof_id'),
-                name: formData.get('prof_name')
+                name: formData.get('prof_name'),
+                department: formData.get('prof_dept') || null,
+                title: formData.get('prof_title') || null,
             })
         });
 
@@ -46,9 +48,9 @@ async function loadProfessors() {
             return;
         }
 
-        let html = '<table class="list-table"><thead><tr><th>ID</th><th>Name</th></tr></thead><tbody>';
+        let html = '<table class="list-table"><thead><tr><th>ID</th><th>Name</th><th>Department</th><th>Title</th></tr></thead><tbody>';
         professors.forEach(prof => {
-            html += `<tr><td>${prof.id}</td><td>${prof.name}</td></tr>`;
+            html += `<tr><td>${prof.id}</td><td>${prof.name}</td><td>${prof.department || '-'}</td><td>${prof.title || '-'}</td></tr>`;
         });
         html += '</tbody></table>';
         listDiv.innerHTML = html;
@@ -171,7 +173,11 @@ function addCourseRequest() {
         id: formData.get('course_id'),
         name: formData.get('course_name'),
         professor_id: formData.get('course_prof'),
-        classroom_id: formData.get('course_room')
+        classroom_id: formData.get('course_room'),
+        credits: formData.get('course_credits') ? parseFloat(formData.get('course_credits')) : null,
+        hours: formData.get('course_hours') ? parseInt(formData.get('course_hours')) : null,
+        course_type: formData.get('course_type') || null,
+        department: formData.get('course_dept') || null,
     };
 
     courseRequests.push(request);

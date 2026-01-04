@@ -20,6 +20,22 @@ class Weekday(Enum):
     FRIDAY = 5
 
 
+class CourseType(Enum):
+    """Course types for graduate programs."""
+
+    REQUIRED = "required"  # 必修 (Required)
+    ELECTIVE = "elective"  # 选修 (Elective)
+
+
+class ProfessorTitle(Enum):
+    """Academic titles for professors."""
+
+    ASSISTANT = "assistant"  # 助教
+    LECTURER = "lecturer"    # 讲师
+    ASSOCIATE = "associate"  # 副教授
+    FULL = "full"            # 教授
+
+
 @dataclass(frozen=True)
 class TimeSlot:
     """Value Object: Immutable time window for scheduling.
@@ -42,6 +58,10 @@ class Professor(SQLModel, table=True):
 
     id: str = Field(primary_key=True)
     name: str
+
+    # Academic metadata (optional)
+    department: str | None = Field(default=None)  # 系部
+    title: str | None = Field(default=None)       # 职称 (store enum value)
 
     # Relationship
     courses: list["Course"] = Relationship(back_populates="professor")
@@ -72,6 +92,12 @@ class Course(SQLModel, table=True):
     weekday: int  # Store Weekday.value (1-5)
     period: int  # 1-12
 
+    # Academic metadata (optional)
+    credits: float | None = Field(default=None)      # 学分
+    hours: int | None = Field(default=None)          # 学时
+    course_type: str | None = Field(default=None)    # 必修/选修 (store enum value)
+    department: str | None = Field(default=None)     # 开课学院
+
     # Relationships
     professor: Professor = Relationship(back_populates="courses")
     classroom: Classroom = Relationship(back_populates="courses")
@@ -89,6 +115,10 @@ class Course(SQLModel, table=True):
         professor_id: str,
         classroom_id: str,
         timeslot: TimeSlot,
+        credits: float | None = None,
+        hours: int | None = None,
+        course_type: str | None = None,
+        department: str | None = None,
     ) -> "Course":
         """Create a Course from a TimeSlot value object."""
         return cls(
@@ -98,4 +128,8 @@ class Course(SQLModel, table=True):
             classroom_id=classroom_id,
             weekday=timeslot.weekday.value,
             period=timeslot.period,
+            credits=credits,
+            hours=hours,
+            course_type=course_type,
+            department=department,
         )

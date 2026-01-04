@@ -30,6 +30,12 @@ class CourseCreateRequest(BaseModel):
     classroom_id: str
     timeslot: TimeSlotSchema
 
+    # Academic metadata (optional)
+    credits: float | None = None
+    hours: int | None = None
+    course_type: str | None = None  # CourseType enum value
+    department: str | None = None
+
 
 class CourseRequestSchema(BaseModel):
     """Schema for a course to be scheduled (no timeslot yet)."""
@@ -38,6 +44,12 @@ class CourseRequestSchema(BaseModel):
     name: str
     professor_id: str
     classroom_id: str
+
+    # Academic metadata (optional)
+    credits: float | None = None
+    hours: int | None = None
+    course_type: str | None = None
+    department: str | None = None
 
 
 class ScheduleGenerateRequest(BaseModel):
@@ -51,6 +63,10 @@ class ProfessorCreateRequest(BaseModel):
 
     id: str
     name: str
+
+    # Academic metadata (optional)
+    department: str | None = None
+    title: str | None = None  # ProfessorTitle enum value
 
 
 class ClassroomCreateRequest(BaseModel):
@@ -153,6 +169,10 @@ def create_course(
         professor_id=course_data.professor_id,
         classroom_id=course_data.classroom_id,
         timeslot=timeslot,
+        credits=course_data.credits,
+        hours=course_data.hours,
+        course_type=course_data.course_type,
+        department=course_data.department,
     )
     
     return repo.add_course(course)
@@ -271,6 +291,10 @@ def generate_schedule(
             "name": cr.name,
             "professor_id": cr.professor_id,
             "classroom_id": cr.classroom_id,
+            "credits": cr.credits,
+            "hours": cr.hours,
+            "course_type": cr.course_type,
+            "department": cr.department,
         }
         for cr in request.course_requests
     ]
