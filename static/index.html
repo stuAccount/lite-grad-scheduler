@@ -70,12 +70,32 @@
             </div>
         </section>
 
-        <!-- SECTION 2: Generate Schedule -->
-        <section id="schedule-generation">
-            <h2>2. Generate Schedule</h2>
+        <!-- SECTION 2: View Schedule -->
+        <section id="schedule-section">
+            <h2>2. View Schedule</h2>
 
             <div class="subsection">
-                <h3>Add Course Requests</h3>
+                <h3>Select View</h3>
+                <div class="form-row">
+                    <label for="view-type">View By:</label>
+                    <select id="view-type" onchange="changeView()">
+                        <option value="weekly">Weekly Grid</option>
+                        <option value="professor">By Professor</option>
+                        <option value="classroom">By Classroom</option>
+                    </select>
+
+                    <select id="view-entity" style="display:none; margin-left: 10px;">
+                        <option value="">Select...</option>
+                    </select>
+                    <button onclick="loadSelectedView()" style="display:none; margin-left: 10px;"
+                        id="load-view-btn">Load</button>
+                </div>
+                <div id="schedule-display"></div>
+            </div>
+
+            <div class="subsection">
+                <h3>Generate New Schedule</h3>
+                <p>Add course requests above, then click generate to create a conflict-free schedule.</p>
                 <form id="add-course-request-form">
                     <div class="form-row">
                         <label for="course_id">Course ID:</label>

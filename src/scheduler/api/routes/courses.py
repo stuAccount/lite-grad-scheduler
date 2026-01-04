@@ -323,3 +323,84 @@ def generate_schedule(
         "courses": saved_courses,
         "total": len(saved_courses),
     }
+
+@router.get("/schedules/professor/{professor_id}")
+def get_professor_schedule(
+    professor_id: str,
+    session: Session = Depends(get_session)
+):
+    """Get schedule for a specific professor.
+    
+    Returns all courses taught by the professor with timeslots.
+    """
+    repo = CourseRepository(session)
+    
+    # Validate professor exists
+    professor = repo.get_professor_by_id(professor_id)
+    if professor is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Professor not found: {professor_id}"
+        )
+    
+    courses = repo.get_courses_by_professor(professor_id)
+    
+    return {
+        "professor": {"id": professor.id, "name": professor.name},
+        "courses": [c.model_dump(mode="json") for c in courses],
+        "total": len(courses)
+    }
+
+
+@router.get("/schedules/classroom/{classroom_id}")
+def get_classroom_schedule(
+    classroom_id: str,
+    session: Session = Depends(get_session)
+):
+    """Get schedule for a specific classroom.
+    
+    Returns all courses held in the classroom with timeslots.
+    """
+    repo = CourseRepository(session)
+    
+    # Validate classroom exists
+    classroom = repo.get_classroom_by_id(classroom_id)
+    if classroom is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Classroom not found: {classroom_id}"
+        )
+    
+    courses = repo.get_courses_by_classroom(classroom_id)
+    
+    return {
+        "classroom": {"id": classroom.id, "name": classroom.name},
+        "courses": [c.model_dump(mode="json") for c in courses],
+        "total": len(courses)
+    }
+
+
+@router.get("/schedules/weekly")
+def get_weekly_schedule(session: Session = Depends(get_session)):
+    """Get full weekly schedule grid.
+    
+    Returns all courses organized by weekday and period.
+    """
+    repo = CourseRepository(session)
+    courses = repo.get_all_courses_ordered()
+    
+    # Organize into grid structure
+    grid = {}
+    for day in range(1, 6):  # Mon-Fri
+        grid[day] = {}
+        for period in range(1, 13):  # Periods 1-12
+            grid[day][period] = []
+    
+    for course in courses:
+        if course.weekday and course.period:
+            grid[course.weekday][course.period].append(course.model_dump(mode="json"))
+    
+    return {
+        "grid": grid,
+        "total_courses": len(courses)
+    }

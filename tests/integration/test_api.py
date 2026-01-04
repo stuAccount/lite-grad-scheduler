@@ -476,3 +476,9 @@ class TestValidation:
         data = response.json()
         assert "classroom" in data["detail"].lower()
 
+class TestScheduleViews:
+    """Test schedule query endpoints."""
+
+    def test_get_professor_schedule(self, client: TestClient):
+        """GET /schedules/professor/{id} returns professor's courses."""
+        # Arrange: create professor, classroom, and courses
