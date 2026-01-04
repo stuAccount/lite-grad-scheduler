@@ -10,9 +10,51 @@
 
 <body>
     <header>
-        <h1>Graduate Course Scheduler</h1>
-        <p>Automated conflict-free scheduling for graduate courses</p>
+        <div class="header-content">
+            <div>
+                <h1>Graduate Course Scheduler</h1>
+                <p>Automated conflict-free scheduling for graduate courses</p>
+            </div>
+            <div class="auth-section">
+                <div id="auth-logged-out">
+                    <button onclick="showLoginModal()">🔑 Login</button>
+                </div>
+                <div id="auth-logged-in" style="display: none;">
+                    <span id="user-display"></span>
+                    <button onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </div>
     </header>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-btn" onclick="hideLoginModal()">&times;</span>
+            <h2 id="modal-title">Login</h2>
+
+            <form id="login-form">
+                <div class="form-row">
+                    <label for="login-username">Username:</label>
+                    <input type="text" id="login-username" required>
+                </div>
+                <div class="form-row" id="email-row" style="display: none;">
+                    <label for="login-email">Email:</label>
+                    <input type="email" id="login-email">
+                </div>
+                <div class="form-row">
+                    <label for="login-password">Password:</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" id="login-btn">Login</button>
+            </form>
+            <p class="toggle-form">
+                <span id="toggle-signup">Don't have an account? <a href="#" onclick="toggleSignup()">Sign up</a></span>
+                <span id="toggle-login" style="display: none;">Already have an account? <a href="#"
+                        onclick="toggleLogin()">Login</a></span>
+            </p>
+        </div>
+    </div>
 
     <main>
         <!-- SECTION 1: Add Resources -->

@@ -3,6 +3,126 @@ const API_BASE = window.location.origin;
 
 // State
 let courseRequests = [];
+let isSignupMode = false;
+
+// ========================================
+// AUTH
+// ========================================
+
+function getToken() {
+    return localStorage.getItem('auth_token');
+}
+
+function setToken(token) {
+    localStorage.setItem('auth_token', token);
+}
+
+function clearToken() {
+    localStorage.removeItem('auth_token');
+}
+
+function getAuthHeaders() {
+    const token = getToken();
+    return token ? { 'Authorization': `Bearer ${token}` } : {};
+}
+
+function isLoggedIn() {
+    return !!getToken();
+}
+
+function updateAuthUI() {
+    const loggedIn = isLoggedIn();
+    document.getElementById('auth-logged-out').style.display = loggedIn ? 'none' : 'block';
+    document.getElementById('auth-logged-in').style.display = loggedIn ? 'block' : 'none';
+
+    // Show/hide admin-only content
+    document.querySelectorAll('.admin-only').forEach(el => {
+        el.style.display = loggedIn ? '' : 'none';
+    });
+
+    if (loggedIn) {
+        // Get user info
+        fetch(`${API_BASE}/auth/me`, { headers: getAuthHeaders() })
+            .then(res => res.ok ? res.json() : null)
+            .then(data => {
+                if (data) {
+                    document.getElementById('user-display').textContent = `👤 ${data.username}`;
+                }
+            });
+    }
+}
+
+function showLoginModal() {
+    document.getElementById('login-modal').style.display = 'flex';
+}
+
+function hideLoginModal() {
+    document.getElementById('login-modal').style.display = 'none';
+    document.getElementById('login-form').reset();
+}
+
+function toggleSignup() {
+    isSignupMode = true;
+    document.getElementById('modal-title').textContent = 'Sign Up';
+    document.getElementById('email-row').style.display = 'block';
+    document.getElementById('login-btn').textContent = 'Sign Up';
+    document.getElementById('toggle-signup').style.display = 'none';
+    document.getElementById('toggle-login').style.display = 'inline';
+}
+
+function toggleLogin() {
+    isSignupMode = false;
+    document.getElementById('modal-title').textContent = 'Login';
+    document.getElementById('email-row').style.display = 'none';
+    document.getElementById('login-btn').textContent = 'Login';
+    document.getElementById('toggle-signup').style.display = 'inline';
+    document.getElementById('toggle-login').style.display = 'none';
+}
+
+async function handleAuthSubmit(e) {
+    e.preventDefault();
+    const username = document.getElementById('login-username').value;
+    const password = document.getElementById('login-password').value;
+    const email = document.getElementById('login-email').value;
+
+    try {
+        let res;
+        if (isSignupMode) {
+            res = await fetch(`${API_BASE}/auth/signup`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+                body: JSON.stringify({ username, email, password })
+            });
+        } else {
+            res = await fetch(`${API_BASE}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+            });
+        }
+
+        if (res.ok) {
+            const data = await res.json();
+            setToken(data.access_token);
+            hideLoginModal();
+            updateAuthUI();
+            showMessage(isSignupMode ? 'Account created!' : 'Logged in!', 'success');
+        } else {
+            const err = await res.json();
+            showMessage(err.detail || 'Auth failed', 'error');
+        }
+    } catch (err) {
+        showMessage('Network error: ' + err.message, 'error');
+    }
+}
+
+function logout() {
+    clearToken();
+    updateAuthUI();
+    showMessage('Logged out', 'success');
+}
+
+document.getElementById('login-form').addEventListener('submit', handleAuthSubmit);
 
 // ========================================
 // PROFESSORS
@@ -15,7 +135,7 @@ document.getElementById('add-professor-form').addEventListener('submit', async (
     try {
         const res = await fetch(`${API_BASE}/courses/professors`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
             body: JSON.stringify({
                 id: formData.get('prof_id'),
                 name: formData.get('prof_name'),
@@ -94,7 +214,7 @@ document.getElementById('add-classroom-form').addEventListener('submit', async (
     try {
         const res = await fetch(`${API_BASE}/courses/classrooms`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
             body: JSON.stringify({
                 id: formData.get('room_id'),
                 name: formData.get('room_name'),
@@ -225,7 +345,7 @@ async function generateSchedule() {
     try {
         const res = await fetch(`${API_BASE}/courses/schedules/generate`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
             body: JSON.stringify({ course_requests: courseRequests })
         });
 
@@ -525,3 +645,9 @@ function exportExcel() {
     window.location.href = `${API_BASE}/courses/export/schedule/excel`;
     showMessage('Downloading Excel file...', 'success');
 }
+
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+    updateAuthUI();
+});
