@@ -215,6 +215,7 @@ footer {
 .bold {
     font-weight: bold;
 }
+
 /* Header layout */
 .header-content {
     display: flex;
@@ -281,4 +282,26 @@ footer {
 .toggle-form a {
     color: #000;
     font-weight: bold;
+}
+
+/* Header Controls */
+.header-controls {
+    display: flex;
+    align-items: center;
+}
+
+.lang-btn {
+    margin-right: 20px;
+    background: #fff;
+    color: #000;
+    padding: 5px 10px;
+    min-width: 60px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lang-btn:hover {
+    background: #eee;
 }

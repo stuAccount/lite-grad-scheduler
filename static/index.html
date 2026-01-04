@@ -12,16 +12,19 @@
     <header>
         <div class="header-content">
             <div>
-                <h1>Graduate Course Scheduler</h1>
-                <p>Automated conflict-free scheduling for graduate courses</p>
+                <h1 data-i18n="app_title">Graduate Course Scheduler</h1>
+                <p data-i18n="app_subtitle">Automated conflict-free scheduling for graduate courses</p>
             </div>
-            <div class="auth-section">
-                <div id="auth-logged-out">
-                    <button onclick="showLoginModal()">🔑 Login</button>
-                </div>
-                <div id="auth-logged-in" style="display: none;">
-                    <span id="user-display"></span>
-                    <button onclick="logout()">Logout</button>
+            <div class="header-controls">
+                <button id="lang-toggle" onclick="toggleLanguage()" class="lang-btn">中文</button>
+                <div class="auth-section">
+                    <div id="auth-logged-out">
+                        <button onclick="showLoginModal()" data-i18n="login_btn">🔑 Login</button>
+                    </div>
+                    <div id="auth-logged-in" style="display: none;">
+                        <span id="user-display"></span>
+                        <button onclick="logout()" data-i18n="logout_btn">Logout</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -31,27 +34,32 @@
     <div id="login-modal" class="modal" style="display: none;">
         <div class="modal-content">
             <span class="close-btn" onclick="hideLoginModal()">&times;</span>
-            <h2 id="modal-title">Login</h2>
+            <h2 id="modal-title" data-i18n="login_title">Login</h2>
 
             <form id="login-form">
                 <div class="form-row">
-                    <label for="login-username">Username:</label>
+                    <label for="login-username" data-i18n="label_username">Username:</label>
                     <input type="text" id="login-username" required>
                 </div>
                 <div class="form-row" id="email-row" style="display: none;">
-                    <label for="login-email">Email:</label>
+                    <label for="login-email" data-i18n="label_email">Email:</label>
                     <input type="email" id="login-email">
                 </div>
                 <div class="form-row">
-                    <label for="login-password">Password:</label>
+                    <label for="login-password" data-i18n="label_password">Password:</label>
                     <input type="password" id="login-password" required>
                 </div>
-                <button type="submit" id="login-btn">Login</button>
+                <button type="submit" id="login-btn" data-i18n="login_btn_modal">Login</button>
             </form>
             <p class="toggle-form">
-                <span id="toggle-signup">Don't have an account? <a href="#" onclick="toggleSignup()">Sign up</a></span>
-                <span id="toggle-login" style="display: none;">Already have an account? <a href="#"
-                        onclick="toggleLogin()">Login</a></span>
+                <span id="toggle-signup">
+                    <span data-i18n="no_account_label">Don't have an account?</span>
+                    <a href="#" onclick="toggleSignup()" data-i18n="signup_link">Sign up</a>
+                </span>
+                <span id="toggle-login" style="display: none;">
+                    <span data-i18n="has_account_label">Already have an account?</span>
+                    <a href="#" onclick="toggleLogin()" data-i18n="login_link">Login</a>
+                </span>
             </p>
         </div>
     </div>
@@ -59,54 +67,54 @@
     <main>
         <!-- SECTION 1: Add Resources -->
         <section id="resources">
-            <h2>1. Add Resources</h2>
+            <h2 data-i18n="section_1_title">1. Add Resources</h2>
 
             <div class="subsection">
-                <h3>Add Professor</h3>
+                <h3 data-i18n="add_professor_title">Add Professor</h3>
                 <form id="add-professor-form">
                     <div class="form-row">
-                        <label for="prof_id">Professor ID:</label>
+                        <label for="prof_id" data-i18n="label_prof_id">Professor ID:</label>
                         <input type="text" id="prof_id" name="prof_id" required>
                     </div>
                     <div class="form-row">
-                        <label for="prof_name">Professor Name:</label>
+                        <label for="prof_name" data-i18n="label_prof_name">Professor Name:</label>
                         <input type="text" id="prof_name" name="prof_name" required>
                     </div>
                     <div class="form-row">
-                        <label for="prof_dept">Department (optional):</label>
+                        <label for="prof_dept" data-i18n="label_dept">Department (optional):</label>
                         <input type="text" id="prof_dept" name="prof_dept">
                     </div>
                     <div class="form-row">
-                        <label for="prof_title">Title (optional):</label>
+                        <label for="prof_title" data-i18n="label_title">Title (optional):</label>
                         <select id="prof_title" name="prof_title">
-                            <option value="">None</option>
-                            <option value="assistant">Assistant Professor</option>
-                            <option value="lecturer">Lecturer</option>
-                            <option value="associate">Associate Professor</option>
-                            <option value="full">Full Professor</option>
+                            <option value="" data-i18n="option_none">None</option>
+                            <option value="assistant" data-i18n="option_assistant">Assistant Professor</option>
+                            <option value="lecturer" data-i18n="option_lecturer">Lecturer</option>
+                            <option value="associate" data-i18n="option_associate">Associate Professor</option>
+                            <option value="full" data-i18n="option_full">Full Professor</option>
                         </select>
                     </div>
-                    <button type="submit">Add Professor</button>
+                    <button type="submit" data-i18n="btn_add_professor">Add Professor</button>
                 </form>
                 <div id="professors-list"></div>
             </div>
 
             <div class="subsection">
-                <h3>Add Classroom</h3>
+                <h3 data-i18n="add_classroom_title">Add Classroom</h3>
                 <form id="add-classroom-form">
                     <div class="form-row">
-                        <label for="room_id">Classroom ID:</label>
+                        <label for="room_id" data-i18n="label_room_id">Classroom ID:</label>
                         <input type="text" id="room_id" name="room_id" required>
                     </div>
                     <div class="form-row">
-                        <label for="room_name">Classroom Name:</label>
+                        <label for="room_name" data-i18n="label_room_name">Classroom Name:</label>
                         <input type="text" id="room_name" name="room_name" required>
                     </div>
                     <div class="form-row">
-                        <label for="room_capacity">Capacity:</label>
+                        <label for="room_capacity" data-i18n="label_capacity">Capacity:</label>
                         <input type="number" id="room_capacity" name="room_capacity" required>
                     </div>
-                    <button type="submit">Add Classroom</button>
+                    <button type="submit" data-i18n="btn_add_classroom">Add Classroom</button>
                 </form>
                 <div id="classrooms-list"></div>
             </div>
@@ -114,84 +122,88 @@
 
         <!-- SECTION 2: View Schedule -->
         <section id="schedule-section">
-            <h2>2. View Schedule</h2>
+            <h2 data-i18n="section_2_title">2. View Schedule</h2>
 
             <div class="subsection">
-                <h3>Select View</h3>
+                <h3 data-i18n="select_view_title">Select View</h3>
                 <div class="form-row">
-                    <label for="view-type">View By:</label>
+                    <label for="view-type" data-i18n="label_view_by">View By:</label>
                     <select id="view-type" onchange="changeView()">
-                        <option value="weekly">Weekly Grid</option>
-                        <option value="professor">By Professor</option>
-                        <option value="classroom">By Classroom</option>
+                        <option value="weekly" data-i18n="option_weekly">Weekly Grid</option>
+                        <option value="professor" data-i18n="option_by_professor">By Professor</option>
+                        <option value="classroom" data-i18n="option_by_classroom">By Classroom</option>
                     </select>
 
                     <select id="view-entity" style="display:none; margin-left: 10px;">
-                        <option value="">Select...</option>
+                        <option value="" data-i18n="option_select">Select...</option>
                     </select>
-                    <button onclick="loadSelectedView()" style="display:none; margin-left: 10px;"
-                        id="load-view-btn">Load</button>
+                    <button onclick="loadSelectedView()" style="display:none; margin-left: 10px;" id="load-view-btn"
+                        data-i18n="btn_load">Load</button>
                 </div>
                 <div id="schedule-display"></div>
             </div>
 
             <div class="subsection">
-                <h3>Export Schedule</h3>
-                <p>Download the schedule for printing or sharing.</p>
-                <button onclick="exportPDF()" class="export-btn" style="margin-right: 10px;">📄 Export as PDF</button>
-                <button onclick="exportExcel()" class="export-btn">📊 Export as Excel</button>
+                <h3 data-i18n="export_schedule_title">Export Schedule</h3>
+                <p data-i18n="export_description">Download the schedule for printing or sharing.</p>
+                <button onclick="exportPDF()" class="export-btn" style="margin-right: 10px;"
+                    data-i18n="btn_export_pdf">📄 Export as PDF</button>
+                <button onclick="exportExcel()" class="export-btn" data-i18n="btn_export_excel">📊 Export as
+                    Excel</button>
             </div>
 
             <div class="subsection">
-                <h3>Generate New Schedule</h3>
-                <p>Add course requests above, then click generate to create a conflict-free schedule.</p>
+                <h3 data-i18n="generate_schedule_title">Generate New Schedule</h3>
+                <p data-i18n="generate_description">Add course requests above, then click generate to create a
+                    conflict-free schedule.</p>
                 <form id="add-course-request-form">
                     <div class="form-row">
-                        <label for="course_id">Course ID:</label>
+                        <label for="course_id" data-i18n="label_course_id">Course ID:</label>
                         <input type="text" id="course_id" name="course_id" required>
                     </div>
                     <div class="form-row">
-                        <label for="course_name">Course Name:</label>
+                        <label for="course_name" data-i18n="label_course_name">Course Name:</label>
                         <input type="text" id="course_name" name="course_name" required>
                     </div>
                     <div class="form-row">
-                        <label for="course_prof">Professor:</label>
+                        <label for="course_prof" data-i18n="label_professor">Professor:</label>
                         <select id="course_prof" name="course_prof" required>
-                            <option value="">Select Professor</option>
+                            <option value="" data-i18n="select_professor">Select Professor</option>
                         </select>
                     </div>
                     <div class="form-row">
-                        <label for="course_room">Classroom:</label>
+                        <label for="course_room" data-i18n="label_classroom">Classroom:</label>
                         <select id="course_room" name="course_room" required>
-                            <option value="">Select Classroom</option>
+                            <option value="" data-i18n="select_classroom">Select Classroom</option>
                         </select>
                     </div>
                     <div class="form-row">
-                        <label for="course_credits">Credits (optional):</label>
+                        <label for="course_credits" data-i18n="label_credits">Credits (optional):</label>
                         <input type="number" step="0.5" id="course_credits" name="course_credits">
                     </div>
                     <div class="form-row">
-                        <label for="course_hours">Hours (optional):</label>
+                        <label for="course_hours" data-i18n="label_hours">Hours (optional):</label>
                         <input type="number" id="course_hours" name="course_hours">
                     </div>
                     <div class="form-row">
-                        <label for="course_type">Type (optional):</label>
+                        <label for="course_type" data-i18n="label_type">Type (optional):</label>
                         <select id="course_type" name="course_type">
-                            <option value="">None</option>
-                            <option value="required">Required (必修)</option>
-                            <option value="elective">Elective (选修)</option>
+                            <option value="" data-i18n="option_none">None</option>
+                            <option value="required" data-i18n="option_required">Required (必修)</option>
+                            <option value="elective" data-i18n="option_elective">Elective (选修)</option>
                         </select>
                     </div>
                     <div class="form-row">
-                        <label for="course_dept">Department (optional):</label>
+                        <label for="course_dept" data-i18n="label_dept">Department (optional):</label>
                         <input type="text" id="course_dept" name="course_dept">
                     </div>
-                    <button type="button" onclick="addCourseRequest()">Add to List</button>
+                    <button type="button" onclick="addCourseRequest()" data-i18n="btn_add_to_list">Add to List</button>
                 </form>
 
                 <div id="course-requests-list"></div>
 
-                <button id="generate-btn" onclick="generateSchedule()" style="margin-top: 20px;">
+                <button id="generate-btn" onclick="generateSchedule()" style="margin-top: 20px;"
+                    data-i18n="btn_generate">
                     Generate Schedule
                 </button>
             </div>
@@ -199,10 +211,10 @@
 
         <!-- SECTION 3: View Results -->
         <section id="results">
-            <h2>3. View Schedule</h2>
+            <h2 data-i18n="section_3_title">3. View Results</h2>
             <div id="schedule-display"></div>
 
-            <h3>Conflicts</h3>
+            <h3 data-i18n="conflicts_title">Conflicts</h3>
             <div id="conflicts-display"></div>
         </section>
     </main>
