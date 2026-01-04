@@ -8,6 +8,7 @@ from .models import (
     Course,
     CourseType,
     ProfessorTitle,
+    User,
 )
 
 __all__ = [
@@ -18,4 +19,5 @@ __all__ = [
     "Course",
     "CourseType",
     "ProfessorTitle",
+    "User",
 ]

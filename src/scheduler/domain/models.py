@@ -133,3 +133,12 @@ class Course(SQLModel, table=True):
             course_type=course_type,
             department=department,
         )
+
+
+class User(SQLModel, table=True):
+    """Admin user account for authentication."""
+    id: str = Field(primary_key=True)
+    username: str = Field(unique=True, index=True)
+    email: str = Field(unique=True)
+    hashed_password: str
+    is_admin: bool = Field(default=True)

@@ -35,6 +35,13 @@ def client_fixture(session: Session):
     app.dependency_overrides.clear()
 
 
+def get_auth_headers() -> dict:
+    """Generate auth headers for protected API calls."""
+    from scheduler.services.security import create_access_token
+    token = create_access_token({"sub": "test-user"})
+    return {"Authorization": f"Bearer {token}"}
+
+
 class TestRootEndpoint:
     """Test the root API endpoint."""
 
@@ -54,6 +61,7 @@ class TestProfessorEndpoints:
         """POST /courses/professors creates a new professor."""
         response = client.post(
             "/courses/professors",
+            headers=get_auth_headers(),
             json={"id": "prof-001", "name": "Alice Wang"}
         )
         assert response.status_code == 201
@@ -69,6 +77,7 @@ class TestClassroomEndpoints:
         """POST /courses/classrooms creates a new classroom."""
         response = client.post(
             "/courses/classrooms",
+            headers=get_auth_headers(),
             json={"id": "room-101", "name": "Room 101", "capacity": 50}
         )
         assert response.status_code == 201
@@ -85,16 +94,19 @@ class TestCourseEndpoints:
         # First create dependencies
         client.post(
             "/courses/professors",
+            headers=get_auth_headers(),
             json={"id": "prof-001", "name": "Alice Wang"}
         )
         client.post(
             "/courses/classrooms",
+            headers=get_auth_headers(),
             json={"id": "room-101", "name": "Room 101", "capacity": 50}
         )
 
         # Create course
         response = client.post(
             "/courses/",
+            headers=get_auth_headers(),
             json={
                 "id": "cs501",
                 "name": "Machine Learning",
@@ -115,16 +127,19 @@ class TestCourseEndpoints:
         # Create professor and classroom
         client.post(
             "/courses/professors",
+            headers=get_auth_headers(),
             json={"id": "prof-001", "name": "Alice Wang"}
         )
         client.post(
             "/courses/classrooms",
+            headers=get_auth_headers(),
             json={"id": "room-101", "name": "Room 101", "capacity": 50}
         )
 
         # Create courses
         client.post(
             "/courses/",
+            headers=get_auth_headers(),
             json={
                 "id": "cs501",
                 "name": "Machine Learning",
@@ -135,6 +150,7 @@ class TestCourseEndpoints:
         )
         client.post(
             "/courses/",
+            headers=get_auth_headers(),
             json={
                 "id": "cs502",
                 "name": "Deep Learning",
@@ -155,14 +171,17 @@ class TestCourseEndpoints:
         # Setup
         client.post(
             "/courses/professors",
+            headers=get_auth_headers(),
             json={"id": "prof-001", "name": "Alice Wang"}
         )
         client.post(
             "/courses/classrooms",
+            headers=get_auth_headers(),
             json={"id": "room-101", "name": "Room 101", "capacity": 50}
         )
         client.post(
             "/courses/",
+            headers=get_auth_headers(),
             json={
                 "id": "cs501",
                 "name": "Machine Learning",
@@ -173,6 +192,7 @@ class TestCourseEndpoints:
         )
         client.post(
             "/courses/",
+            headers=get_auth_headers(),
             json={
                 "id": "cs502",
                 "name": "Deep Learning",
@@ -183,7 +203,7 @@ class TestCourseEndpoints:
         )
 
         # Check conflicts
-        response = client.post("/courses/check-conflicts")
+        response = client.post("/courses/check-conflicts", headers=get_auth_headers())
         assert response.status_code == 200
         data = response.json()
         assert data["professor_conflicts"] == 0
@@ -194,20 +214,24 @@ class TestCourseEndpoints:
         # Setup
         client.post(
             "/courses/professors",
+            headers=get_auth_headers(),
             json={"id": "prof-001", "name": "Alice Wang"}
         )
         client.post(
             "/courses/classrooms",
+            headers=get_auth_headers(),
             json={"id": "room-101", "name": "Room 101", "capacity": 50}
         )
         client.post(
             "/courses/classrooms",
+            headers=get_auth_headers(),
             json={"id": "room-202", "name": "Room 202", "capacity": 100}
         )
 
         # Create conflicting courses (same professor, same timeslot, different rooms)
         client.post(
             "/courses/",
+            headers=get_auth_headers(),
             json={
                 "id": "cs501",
                 "name": "Machine Learning",
@@ -218,6 +242,7 @@ class TestCourseEndpoints:
         )
         client.post(
             "/courses/",
+            headers=get_auth_headers(),
             json={
                 "id": "cs502",
                 "name": "Deep Learning",
@@ -228,7 +253,7 @@ class TestCourseEndpoints:
         )
 
         # Check conflicts
-        response = client.post("/courses/check-conflicts")
+        response = client.post("/courses/check-conflicts", headers=get_auth_headers())
         assert response.status_code == 200
         data = response.json()
         assert data["professor_conflicts"] == 1
@@ -239,20 +264,24 @@ class TestCourseEndpoints:
         # Setup
         client.post(
             "/courses/professors",
+            headers=get_auth_headers(),
             json={"id": "prof-001", "name": "Alice Wang"}
         )
         client.post(
             "/courses/professors",
+            headers=get_auth_headers(),
             json={"id": "prof-002", "name": "Bob Chen"}
         )
         client.post(
             "/courses/classrooms",
+            headers=get_auth_headers(),
             json={"id": "room-101", "name": "Room 101", "capacity": 50}
         )
 
         # Create conflicting courses (different professors, same room, same timeslot)
         client.post(
             "/courses/",
+            headers=get_auth_headers(),
             json={
                 "id": "cs501",
                 "name": "Machine Learning",
@@ -263,6 +292,7 @@ class TestCourseEndpoints:
         )
         client.post(
             "/courses/",
+            headers=get_auth_headers(),
             json={
                 "id": "cs601",
                 "name": "Database Systems",
@@ -273,7 +303,7 @@ class TestCourseEndpoints:
         )
 
         # Check conflicts
-        response = client.post("/courses/check-conflicts")
+        response = client.post("/courses/check-conflicts", headers=get_auth_headers())
         assert response.status_code == 200
         data = response.json()
         assert data["classroom_conflicts"] == 1
@@ -288,24 +318,29 @@ class TestScheduleGeneration:
         # Create professors and classrooms
         client.post(
             "/courses/professors",
+            headers=get_auth_headers(),
             json={"id": "prof-001", "name": "Alice Wang"}
         )
         client.post(
             "/courses/professors",
+            headers=get_auth_headers(),
             json={"id": "prof-002", "name": "Bob Chen"}
         )
         client.post(
             "/courses/classrooms",
+            headers=get_auth_headers(),
             json={"id": "room-101", "name": "Room 101", "capacity": 50}
         )
         client.post(
             "/courses/classrooms",
+            headers=get_auth_headers(),
             json={"id": "room-202", "name": "Room 202", "capacity": 100}
         )
 
         # Generate schedule
         response = client.post(
             "/courses/schedules/generate",
+            headers=get_auth_headers(),
             json={
                 "course_requests": [
                     {
@@ -344,7 +379,7 @@ class TestScheduleGeneration:
             assert course["period"] >= 1 and course["period"] <= 12
 
         # Verify schedule is conflict-free
-        conflict_response = client.post("/courses/check-conflicts")
+        conflict_response = client.post("/courses/check-conflicts", headers=get_auth_headers())
         assert conflict_response.status_code == 200
         conflict_data = conflict_response.json()
         assert conflict_data["professor_conflicts"] == 0
@@ -359,12 +394,14 @@ class TestValidation:
         # Create only a classroom, no professor
         client.post(
             "/courses/classrooms",
+            headers=get_auth_headers(),
             json={"id": "room-101", "name": "Room 101", "capacity": 50}
         )
 
         # Try to create course with non-existent professor
         response = client.post(
             "/courses/",
+            headers=get_auth_headers(),
             json={
                 "id": "cs501",
                 "name": "Machine Learning",
@@ -383,12 +420,14 @@ class TestValidation:
         # Create only a professor, no classroom
         client.post(
             "/courses/professors",
+            headers=get_auth_headers(),
             json={"id": "prof-001", "name": "Alice Wang"}
         )
 
         # Try to create course with non-existent classroom
         response = client.post(
             "/courses/",
+            headers=get_auth_headers(),
             json={
                 "id": "cs501",
                 "name": "Machine Learning",
@@ -407,6 +446,7 @@ class TestValidation:
         # Create nothing
         response = client.post(
             "/courses/",
+            headers=get_auth_headers(),
             json={
                 "id": "cs501",
                 "name": "Machine Learning",
@@ -427,12 +467,14 @@ class TestValidation:
         # Create only classrooms
         client.post(
             "/courses/classrooms",
+            headers=get_auth_headers(),
             json={"id": "room-101", "name": "Room 101", "capacity": 50}
         )
 
         # Try to generate schedule with non-existent professor
         response = client.post(
             "/courses/schedules/generate",
+            headers=get_auth_headers(),
             json={
                 "course_requests": [
                     {
@@ -454,12 +496,14 @@ class TestValidation:
         # Create only professors
         client.post(
             "/courses/professors",
+            headers=get_auth_headers(),
             json={"id": "prof-001", "name": "Alice Wang"}
         )
 
         # Try to generate schedule with non-existent classroom
         response = client.post(
             "/courses/schedules/generate",
+            headers=get_auth_headers(),
             json={
                 "course_requests": [
                     {

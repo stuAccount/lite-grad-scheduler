@@ -34,19 +34,26 @@ def client_fixture(session: Session):
     app.dependency_overrides.clear()
 
 
+def get_auth_headers() -> dict:
+    """Generate auth headers for protected API calls."""
+    from scheduler.services.security import create_access_token
+    token = create_access_token({"sub": "test-user"})
+    return {"Authorization": f"Bearer {token}"}
+
+
 class TestScheduleViews:
     """Test schedule query endpoints."""
 
     def test_get_professor_schedule(self, client: TestClient):
         """GET /schedules/professor/{id} returns professor's courses."""
         # Arrange: create professor, classroom, and courses
-        client.post("/courses/professors", json={"id": "prof-001", "name": "Alice"})
-        client.post("/courses/classrooms", json={"id": "room-101", "name": "Room 101", "capacity": 50})
-        client.post("/courses/", json={
+        client.post("/courses/professors", headers=get_auth_headers(), json={"id": "prof-001", "name": "Alice"})
+        client.post("/courses/classrooms", headers=get_auth_headers(), json={"id": "room-101", "name": "Room 101", "capacity": 50})
+        client.post("/courses/", headers=get_auth_headers(), json={
             "id": "cs501", "name": "ML", "professor_id": "prof-001",
             "classroom_id": "room-101", "timeslot": {"weekday": 1, "period": 1}
         })
-        client.post("/courses/", json={
+        client.post("/courses/", headers=get_auth_headers(), json={
             "id": "cs502", "name": "DL", "professor_id": "prof-001",
             "classroom_id": "room-101", "timeslot": {"weekday": 2, "period": 2}
         })
@@ -70,9 +77,9 @@ class TestScheduleViews:
     def test_get_classroom_schedule(self, client: TestClient):
         """GET /schedules/classroom/{id} returns classroom's courses."""
         # Arrange
-        client.post("/courses/professors", json={"id": "prof-001", "name": "Alice"})
-        client.post("/courses/classrooms", json={"id": "room-101", "name": "Room 101", "capacity": 50})
-        client.post("/courses/", json={
+        client.post("/courses/professors", headers=get_auth_headers(), json={"id": "prof-001", "name": "Alice"})
+        client.post("/courses/classrooms", headers=get_auth_headers(), json={"id": "room-101", "name": "Room 101", "capacity": 50})
+        client.post("/courses/", headers=get_auth_headers(), json={
             "id": "cs501", "name": "ML", "professor_id": "prof-001",
             "classroom_id": "room-101", "timeslot": {"weekday": 1, "period": 1}
         })
@@ -90,9 +97,9 @@ class TestScheduleViews:
     def test_get_weekly_schedule(self, client: TestClient):
         """GET /schedules/weekly returns full grid."""
         # Arrange
-        client.post("/courses/professors", json={"id": "prof-001", "name": "Alice"})
-        client.post("/courses/classrooms", json={"id": "room-101", "name": "Room 101", "capacity": 50})
-        client.post("/courses/", json={
+        client.post("/courses/professors", headers=get_auth_headers(), json={"id": "prof-001", "name": "Alice"})
+        client.post("/courses/classrooms", headers=get_auth_headers(), json={"id": "room-101", "name": "Room 101", "capacity": 50})
+        client.post("/courses/", headers=get_auth_headers(), json={
             "id": "cs501", "name": "ML", "professor_id": "prof-001",
             "classroom_id": "room-101", "timeslot": {"weekday": 1, "period": 1}
         })

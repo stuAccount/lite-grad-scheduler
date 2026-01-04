@@ -8,19 +8,17 @@ A lightweight, logic-driven course scheduling system for graduate students built
 
 ## ✨ Features
 
-### Core (Implemented)
+### Release 1.0 (Implemented ✅)
 - **Automated Scheduling**: OR-Tools powered conflict-free schedule generation
 - **Hard Constraint Detection**: Professor and classroom double-booking prevention
 - **REST API**: Full CRUD operations for professors, classrooms, and courses
 - **SQLite Persistence**: Lightweight database with SQLModel ORM
-- **Web Interface**: Simple UI for managing resources and generating schedules
-- **94% Test Coverage**: Comprehensive unit and integration tests
-
-### Coming in v1.0
-- Data integrity validation (no orphaned courses)
-- Enhanced course metadata (credits, hours, type)
-- Multi-view schedule queries (by professor, classroom)
-- PDF/Excel export
+- **Web Interface**: Modern UI for managing resources and generating schedules
+- **Data Integrity Validation**: Referential integrity checks, dropdown selectors
+- **Enhanced Metadata**: Course credits, hours, type; Professor department, title
+- **Multi-View Schedules**: Query by professor, classroom, or weekly grid
+- **Export Functionality**: PDF (formatted grid) and Excel (sortable data) exports
+- **95% Test Coverage**: 35 passing tests (unit + integration)
 
 ---
 
@@ -179,19 +177,17 @@ lite-grad-scheduler/
 
 ## 🚧 Roadmap
 
-### Completed
+### ✅ Release 1.0 (Complete!)
 - **Sprint 1** ✅: Conflict Detection MVP
 - **Sprint 2** ✅: Persistence + REST API
 - **Sprint 3** ✅: Automated scheduling with OR-Tools
 - **Sprint 4** ✅: Web UI
 - **Sprint 5** ✅: Data integrity validation
 - **Sprint 6** ✅: Enhanced course/professor metadata
+- **Sprint 7** ✅: Multi-view schedule queries
+- **Sprint 8** ✅: PDF/Excel export
 
-### Release 1.0 (In Progress)
-- **Sprint 7**: Multi-view schedule queries
-- **Sprint 8**: PDF/Excel export
-
-### Future
+### 🔮 Future Releases
 - Admin authentication & role-based access
 - Student enrollment model
 - Drag-and-drop schedule adjustment

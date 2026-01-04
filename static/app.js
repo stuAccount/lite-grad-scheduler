@@ -358,7 +358,7 @@ function changeView() {
     const viewType = document.getElementById('view-type').value;
     const entitySelect = document.getElementById('view-entity');
     const loadBtn = document.getElementById('load-view-btn');
-    
+
     if (viewType === 'weekly') {
         entitySelect.style.display = 'none';
         loadBtn.style.display = 'none';
@@ -373,11 +373,11 @@ function changeView() {
 async function populateEntityDropdown(viewType) {
     const entitySelect = document.getElementById('view-entity');
     const endpoint = viewType === 'professor' ? '/courses/professors' : '/courses/classrooms';
-    
+
     try {
         const res = await fetch(`${API_BASE}${endpoint}`);
         const items = await res.json();
-        
+
         entitySelect.innerHTML = '<option value="">Select...</option>';
         items.forEach(item => {
             const option = document.createElement('option');
@@ -393,16 +393,16 @@ async function populateEntityDropdown(viewType) {
 async function loadSelectedView() {
     const viewType = document.getElementById('view-type').value;
     const entityId = document.getElementById('view-entity').value;
-    
+
     if (!entityId) {
         showMessage('Please select an entity', 'error');
         return;
     }
-    
+
     try {
         const endpoint = `/courses/schedules/${viewType}/${entityId}`;
         const res = await fetch(`${API_BASE}${endpoint}`);
-        
+
         if (res.ok) {
             const data = await res.json();
             displayEntitySchedule(data, viewType);
@@ -419,14 +419,14 @@ function displayEntitySchedule(data, viewType) {
     const displayDiv = document.getElementById('schedule-display');
     const entity = data.professor || data.classroom;
     const entityType = viewType === 'professor' ? 'Professor' : 'Classroom';
-    
+
     let html = `<h3>${entityType}: ${entity.name}</h3>`;
-    
+
     if (data.courses.length === 0) {
         html += '<p>No courses scheduled.</p>';
     } else {
         const weekdays = ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-        
+
         html += '<table class="list-table"><thead><tr>';
         html += '<th>Course ID</th><th>Course Name</th><th>Day</th><th>Period</th>';
         if (viewType === 'professor') {
@@ -435,7 +435,7 @@ function displayEntitySchedule(data, viewType) {
             html += '<th>Professor</th>';
         }
         html += '</tr></thead><tbody>';
-        
+
         data.courses.forEach(course => {
             html += `<tr>
                 <td>${course.id}</td>
@@ -445,18 +445,18 @@ function displayEntitySchedule(data, viewType) {
                 <td>${viewType === 'professor' ? course.classroom_id : course.professor_id}</td>
             </tr>`;
         });
-        
+
         html += '</tbody></table>';
         html += `<p><strong>Total: ${data.total} course(s)</strong></p>`;
     }
-    
+
     displayDiv.innerHTML = html;
 }
 
 async function loadWeeklyView() {
     try {
         const res = await fetch(`${API_BASE}/courses/schedules/weekly`);
-        
+
         if (res.ok) {
             const data = await res.json();
             displayWeeklyGrid(data);
@@ -472,18 +472,18 @@ async function loadWeeklyView() {
 function displayWeeklyGrid(data) {
     const displayDiv = document.getElementById('schedule-display');
     const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-    
+
     if (data.total_courses === 0) {
         displayDiv.innerHTML = '<p>No courses scheduled yet.</p>';
         return;
     }
-    
+
     let html = '<div class="schedule-grid"><table><thead><tr><th>Period</th>';
     weekdays.forEach(day => {
         html += `<th>${day}</th>`;
     });
     html += '</tr></thead><tbody>';
-    
+
     for (let period = 1; period <= 12; period++) {
         html += `<tr><td><strong>P${period}</strong></td>`;
         for (let day = 1; day <= 5; day++) {
@@ -501,7 +501,7 @@ function displayWeeklyGrid(data) {
         }
         html += '</tr>';
     }
-    
+
     html += '</tbody></table></div>';
     html += `<p><strong>Total: ${data.total_courses} course(s)</strong></p>`;
     displayDiv.innerHTML = html;

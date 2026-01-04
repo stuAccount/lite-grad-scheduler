@@ -85,7 +85,11 @@ class ConflictResponse(BaseModel):
     details: dict
 
 
-@router.post("/professors", status_code=201)
+# Import auth dependency
+from scheduler.api.routes.auth import require_auth
+
+
+@router.post("/professors", status_code=201, dependencies=[Depends(require_auth)])
 def create_professor(
     professor_data: ProfessorCreateRequest, session: Session = Depends(get_session)
 ):
@@ -102,7 +106,7 @@ def list_professors(session: Session = Depends(get_session)):
     return repo.get_all_professors()
 
 
-@router.post("/classrooms", status_code=201)
+@router.post("/classrooms", status_code=201, dependencies=[Depends(require_auth)])
 def create_classroom(
     classroom_data: ClassroomCreateRequest, session: Session = Depends(get_session)
 ):
@@ -119,7 +123,7 @@ def list_classrooms(session: Session = Depends(get_session)):
     return repo.get_all_classrooms()
 
 
-@router.post("/", status_code=201)
+@router.post("/", status_code=201, dependencies=[Depends(require_auth)])
 def create_course(
     course_data: CourseCreateRequest, session: Session = Depends(get_session)
 ):
@@ -185,7 +189,7 @@ def list_courses(session: Session = Depends(get_session)):
     return repo.get_all_courses()
 
 
-@router.post("/check-conflicts")
+@router.post("/check-conflicts", dependencies=[Depends(require_auth)])
 def check_conflicts(session: Session = Depends(get_session)) -> ConflictResponse:
     """Check for scheduling conflicts among all courses.
     
@@ -230,7 +234,7 @@ def check_conflicts(session: Session = Depends(get_session)) -> ConflictResponse
     )
 
 
-@router.post("/schedules/generate")
+@router.post("/schedules/generate", dependencies=[Depends(require_auth)])
 def generate_schedule(
     request: ScheduleGenerateRequest, session: Session = Depends(get_session)
 ):

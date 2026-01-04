@@ -60,3 +60,21 @@ def monday_period_2() -> TimeSlot:
 def tuesday_period_1() -> TimeSlot:
     """Tuesday, first period (morning)."""
     return TimeSlot(weekday=Weekday.TUESDAY, period=1)
+
+
+# ============================================================================
+# Auth Fixtures
+# ============================================================================
+
+
+@pytest.fixture
+def auth_token():
+    """Generate a valid JWT token for tests."""
+    from scheduler.services.security import create_access_token
+    return create_access_token({"sub": "test-user-id"})
+
+
+@pytest.fixture
+def auth_headers(auth_token):
+    """Return auth headers for API calls."""
+    return {"Authorization": f"Bearer {auth_token}"}
